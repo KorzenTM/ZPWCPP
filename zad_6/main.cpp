@@ -23,6 +23,9 @@ struct hypercube_volume<a, 0>
 enum {res = 1};
 int main()
 {
+    // PB: Sprawdzenie czy liczy się w czasie kompilacji - niestety nie działa
+    //static_assert(hypercube_volume<5, 5>::calculate() == 3125);
+
     std::cout << "V = " << hypercube_volume<-5, 4>::calculate() << "\n";
     std::cout << "V = " << hypercube_volume<5, 4>::calculate() << "\n";
     return 0;
