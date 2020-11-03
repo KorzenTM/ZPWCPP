@@ -16,17 +16,11 @@ auto add1(const T1 *a,const T2 *b)
     return *a + *b;
 }
 
-// PB: Lepiej zwracać std:string żeby uniknąć konieczności ręcznego zwalniania pamięci
 template<>
 auto add1(const char* a, const char *b)
 {
     return std::string(a) + std::string(b);
 }
-
-
-// PB: Powinny być zdefiniowane osobne szablony do dodawania liczby przekazanych
-//     przez referencje i przez wskaźniki
-// PB: Zadanie nie jest rozwiązane poprawnie.
 
 int main()
 {
