@@ -2,6 +2,13 @@
 #include <string>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+
+template<typename T1, typename T2>
+auto add1(const T1 &a, const T2 &b) ->decltype(a+b)
+{
+    return a + b;
+}
 
 template<typename T1, typename T2>
 auto add1(const T1 *a,const T2 *b)
@@ -12,11 +19,7 @@ auto add1(const T1 *a,const T2 *b)
 template<>
 auto add1(const char* a, const char *b)
 {
-    size_t SIZE = strlen(a) + strlen(b);
-    char *buf = new char[SIZE];
-    strcpy(buf, a);
-    strcat(buf, b);
-    return buf;
+    return std::string(a) + std::string(b);
 }
 
 int main()
@@ -31,16 +34,15 @@ int main()
     int *p_c = &c;
     double *p_d = &d;
 
+    std::cout << a << " + " << b << " = " << add1(a, b) << "\n";
     std::cout << a << " + " << b << " = " << add1(p_a , p_b) << "\n";
     std::cout << c << " + " << d << " = " << add1(p_c , p_d) << "\n";
 
     const char *s1 = "Hello ";
     const char *s2 = "World";
-    const char *output = add1(s1, s2);
 
-    std::cout << output << "\n";
+    std::cout << add1(s1, s2) << "\n";
 
-    delete [] output;
     return 0;
 }
 
