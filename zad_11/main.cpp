@@ -5,33 +5,38 @@ int main()
 {
     std::cout << "Bez dodatkowych dyrektyw:\n";
     #pragma omp parallel
-    std::cout << "Witaj z watku nr " << omp_get_thread_num() << " sposrod " << omp_get_num_threads() << "\n";
+    std::cout << "Witaj z watku nr " << omp_get_thread_num()
+              << " sposrod " <<omp_get_num_threads() << "\n";
+
 
     std::cout << "\nDyrektywa omp single\n";
     #pragma omp parallel
     #pragma omp single
-    std::cout << "Witaj z watku nr " << omp_get_thread_num() << " sposrod " << omp_get_num_threads() << "\n";
+    std::cout << "Witaj z watku nr " << omp_get_thread_num()
+              << " sposrod " <<omp_get_num_threads() << "\n";
 
     std::cout << "\nDyrektywa omp master\n";
     #pragma omp parallel
     #pragma omp master
-    std::cout << "Witaj z watku nr " << omp_get_thread_num() << " sposrod " << omp_get_num_threads() << "\n";
+    std::cout << "Witaj z watku nr " << omp_get_thread_num()
+              << " sposrod " <<omp_get_num_threads() << "\n";
 
     std::cout << "\nDyrektywa omp critical\n";
     #pragma omp parallel
     #pragma omp critical
-    std::cout << "Witaj z watku nr " << omp_get_thread_num() << " sposrod " << omp_get_num_threads() << "\n";
+    std::cout << "Witaj z watku nr " << omp_get_thread_num()
+              << " sposrod " <<omp_get_num_threads() << "\n";
+
 }
 
 /*
 1.
 a)
-    Za każdym razem wynik działania programu jest taki sam z tą różnicą, że jest wykonywany przez inny wątek.
-    Jest to skutek tego, że w danej chwili wątki mogą być ,,zajętę,, innym zadaniem o większym priorytecie lub
-    za bardzo obciążone i zgłasza się ten, który jest najbardziej w danej chwili dostępny.
+    Wynik działania programu jest inny za każdym razem. Program za każdym razem jest wywoływany przez inny wątek. Wątki
+    są wybierane przez środowisko uruchomieniowe.
 b)
-    Komunikaty wchodzą sobie w drogę. Jest to skutek braku synchronizacji. Ma miejsce wtedy wyścig danych(date race).
-    Dwa wątki mają dostęp do tej samej pamięci. Powoduje to różne wyniki programu.
+    Komunikaty wchodzą sobie w drogę. Jest to skutek braku synchronizacji oraz tego, że jeden wątek może być przeplatany
+    z wyjściem z innego wątku, ponieważ operator << jest tłumaczony przez kompilator na wywołanie paru funkcji <<().
 
 2.
 a)
