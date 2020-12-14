@@ -15,7 +15,6 @@ int main()
     }
     tasks.stop();
 
-
     std::cout << "Average = " << tasks.average() << "\n";
 }
 
