@@ -2,30 +2,33 @@
 #define LABORATORIUM_TASK_H
 #include <vector>
 #include <thread>
-#include <future>
 #include <functional>
-#include <cassert>
+#include <condition_variable>
 #include <mutex>
 #include <iostream>
+#include <queue>
 #include <atomic>
 
 class Task
 {
 public:
     Task(int number_of_threads);
-    void add_task(std::function<double()> task);
-    double average();
+    void add_task(const std::function<double()>& task);
+    double average() const;
     void stop();
     ~Task() = default;
 private:
-    void calculateSumOfTasks(int index);
     void runThreads();
-    long unsigned int mNumberOfThreads;
+
     std::vector<std::thread> mThreads;
-    std::vector<std::function<double()>> mTasks;
-    double mSumOfResults = 0;
+    std::queue<std::function<double()>> mTasks;
     std::mutex mtx;
-    std::atomic<int> counter;
+    std::condition_variable mCV;
+
+    double mSumOfResults = 0;
+    long unsigned int mNumberOfThreads;
+    bool mStop;
+    std::atomic<int> mCounter;
 };
 
 

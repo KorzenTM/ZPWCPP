@@ -1,54 +1,66 @@
 #include "Task.h"
 
-Task::Task(int number_of_threads):mNumberOfThreads(number_of_threads)
+Task::Task(int number_of_threads):mNumberOfThreads(number_of_threads), mStop(false)
 {
-    mTasks.reserve(mNumberOfThreads);
     std::lock_guard<std::mutex> guard(mtx);
+    mCounter = 0;
     for(size_t i = 0; i < mNumberOfThreads; i++)
     {
-        mThreads.emplace_back();
+        mThreads.emplace_back(&Task::runThreads, this);
     }
 }
 
-void Task::add_task(std::function<double()> task)
+void Task::add_task(const std::function<double()>& task)
 {
-    mTasks.push_back(task);
-    if (mTasks.size() == mThreads.size())
-    {
-        counter = mTasks.size();
-        runThreads();
-    }
+    mTasks.push(task);
 }
 
 void Task::runThreads()
 {
-    for (size_t i = 0; i < mThreads.size(); i++)
+    std::unique_lock<std::mutex> lock(mtx);
+
+    do
     {
-        mThreads[i] = std::thread(&Task::calculateSumOfTasks, this, i);
-    }
+        //wait until we have data
+        mCV.wait(lock, [this] {
+            return (!mTasks.empty() || mStop);
+        });
+
+        //after wait, we own the lock
+        if (!mTasks.empty())
+        {
+            auto op = std::move(mTasks.front());
+            mTasks.pop();
+
+            //unlock now that we are done messing with the queue
+            lock.unlock();
+            mCounter++;
+            mSumOfResults += op();
+
+            lock.lock();
+        }
+    }while (!mStop);
 }
 
-void Task::calculateSumOfTasks(int index)
+double Task::average() const
 {
-    std::lock_guard<std::mutex> guard(mtx);
-    mSumOfResults += mTasks[index]();
-    counter--;
-}
-
-double Task::average()
-{
-    return mSumOfResults / mNumberOfThreads;
+    return mSumOfResults / mCounter;
 }
 
 void Task::stop()
 {
-    while(counter != 0)
+    // Signal to dispatch threads that it's time to wrap up
+    mStop = true;
+    mCV.notify_all();
+
+    // Wait for threads to finish their work before we exit
+    for (auto & mThread : mThreads)
     {
-        std::cout << "Waiting for unfinished tasks...\n";
+        if (mThread.joinable())
+        {
+            mThread.join();
+        }
     }
-    std::cout << "All of tasks have been done\n";
-    for (auto &thread : mThreads)
-        thread.join();
 }
 
 
