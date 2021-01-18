@@ -38,8 +38,5 @@ void async_examples(std::launch policy)
     auto f_1 = std::async(policy, print, "First function");
     auto f_2 = std::async(policy, print, "Second function");
     auto f_3 = std::async(policy, print, "Third function");
-    f_1.get();
-    f_2.get();
-    f_3.get();
 }
 

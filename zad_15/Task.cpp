@@ -31,7 +31,6 @@ void Task::runThreads()
         {
             auto op = std::move(mTasks.front());
             mTasks.pop();
-
             //unlock now that we are done messing with the queue
             lock.unlock();
             mCounter++;

@@ -19,7 +19,7 @@ int main()
         std::promise<double> scalar_promise;
         futures.push_back(std::future<double>(scalar_promise.get_future()));
         threads.emplace_back(&scalar_product, std::cref(v1), std::cref(v2), std::ref(scalar_promise));
-        threads[i].join();
+        //threads[i].join();
     }
     double sum = 0;
     for (auto &x : futures)
