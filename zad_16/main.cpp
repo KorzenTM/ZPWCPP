@@ -16,7 +16,7 @@ int main()
 
     for (size_t i = 0; i < 10; i++)
     {
-        tanks.emplace_back(100);
+        tanks.emplace_back(10);
         std::shared_ptr<ZbiornikPaliwa> sharedPtr = std::make_shared<ZbiornikPaliwa>(tanks[i]);
         silnik1.connectTank(sharedPtr);
         silnik2.connectTank(sharedPtr);

@@ -31,16 +31,16 @@ void Silnik::startEngine()
         {
             if (mTanks[i]->pobierz(mFuelToDownload) == 0)
             {
-                std::cout << "The tank has been disconnected\n";
+                std::cout << "The tank has benn disconnected\n";
                 mTanks.erase(mTanks.begin() + 1);
+                mSleep = false;
             }
             else
             {
-                mSleep = false;
+                mSleep = true;
                 break;
             }
         }
-
     }
 }
 
