@@ -6,7 +6,7 @@
 #define LABORATORIUM_SILNIK_H
 
 #include "ZbiornikPaliwa.h"
-#include <vector>
+#include <list>
 #include <mutex>
 #include <thread>
 #include <chrono>
@@ -16,7 +16,7 @@
 class Silnik
 {
 private:
-    std::vector<std::shared_ptr<ZbiornikPaliwa>> mTanks;
+    std::list<std::shared_ptr<ZbiornikPaliwa>> mTanks;
     unsigned int mInterval;
     unsigned int mFuelToDownload;
     std::mutex mtx;
@@ -26,7 +26,7 @@ private:
     void startEngine();
 public:
     Silnik(unsigned int interval, unsigned fuelToDownload);
-    void connectTank(std::shared_ptr<ZbiornikPaliwa>& newTank);
+    void connectTank(std::shared_ptr<ZbiornikPaliwa> &tank);
     ~Silnik();
 };
 

@@ -12,15 +12,18 @@ int main()
     Silnik silnik2(1, 1);
     Silnik silnik3(3, 2);
 
-    std::vector<ZbiornikPaliwa> tanks;
+    std::list<std::shared_ptr<ZbiornikPaliwa>> tanks;
 
-    for (size_t i = 0; i < 10; i++)
+    for (int i = 0; i < 10 ; i++)
     {
-        tanks.emplace_back(10);
-        std::shared_ptr<ZbiornikPaliwa> sharedPtr = std::make_shared<ZbiornikPaliwa>(tanks[i]);
-        silnik1.connectTank(sharedPtr);
-        silnik2.connectTank(sharedPtr);
-        silnik3.connectTank(sharedPtr);
+        tanks.push_back(std::make_shared<ZbiornikPaliwa>(100));
+    }
+
+    for (auto &tank : tanks)
+    {
+        silnik1.connectTank(tank);
+        silnik2.connectTank(tank);
+        silnik3.connectTank(tank);
     }
     return 0;
 }

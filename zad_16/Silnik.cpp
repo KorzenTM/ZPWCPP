@@ -11,43 +11,28 @@ Silnik::Silnik(unsigned int interval, unsigned int fuelToDownload) : mInterval(i
 
 void Silnik::startEngine()
 {
-    mSleep = true;
-    while (true)
+    std::unique_lock<std::mutex> lock(mtx);
+    while(!mTanks.empty())
     {
-        if (mSleep)
-        {
-            std::this_thread::sleep_for(std::chrono::seconds(mInterval));
-        }
+        unsigned int currentFuel = mTanks.front()->pobierz(mFuelToDownload);
 
-        std::lock_guard<std::mutex> guard(mtx);
-
-        if (mTanks.empty())
+        if (currentFuel == 0)
         {
-            std::cout << "The engine has been completed\n";
-            return;
+            mTanks.pop_front();
         }
+        lock.unlock();
 
-        for(size_t i = 0; i < mTanks.size(); i++)
-        {
-            if (mTanks[i]->pobierz(mFuelToDownload) == 0)
-            {
-                std::cout << "The tank has benn disconnected\n";
-                mTanks.erase(mTanks.begin() + 1);
-                mSleep = false;
-            }
-            else
-            {
-                mSleep = true;
-                break;
-            }
-        }
+        std::this_thread::sleep_for(std::chrono::seconds(mInterval));
+
+        lock.lock();
     }
 }
 
-void Silnik::connectTank(std::shared_ptr<ZbiornikPaliwa>& newTank)
+void Silnik::connectTank(std::shared_ptr<ZbiornikPaliwa> &tank)
 {
     std::cout << "Fuel tank added\n";
-    mTanks.push_back(newTank);
+    std::unique_lock<std::mutex> uniqueLock(mtx);
+    mTanks.push_back(tank);
 }
 
 Silnik::~Silnik()
