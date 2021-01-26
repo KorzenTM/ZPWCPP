@@ -6,6 +6,7 @@
 #define LABORATORIUM_SINGLETON_H
 #include <iostream>
 #include <memory>
+#include <mutex>
 
 
 class Singleton
@@ -13,6 +14,7 @@ class Singleton
 private:
     Singleton();
     static std::shared_ptr<Singleton> theSingleInstance;
+    static std::mutex mMutex;
     int counter;
 public:
     static Singleton &instance();

@@ -10,7 +10,7 @@ Singleton.o: Singleton.cpp Singleton.h
 	g++ -c -Wall -pedantic -Werror Singleton.cpp
 
 calls1.o: calls1.cpp calls1.h
-	g++ -c -Wall -pedantic -Werror calls1.cpp
+	g++  -std=c++17 -c -Wall -pedantic -Werror calls1.cpp
 
 singleton_static.a: Singleton.o calls1.o
 	ar rcs libsingleton_static.a Singleton.o calls1.o
@@ -18,10 +18,10 @@ singleton_static.a: Singleton.o calls1.o
 libs: singleton_static.a
 #dynamic library
 Singleton.o: Singleton.cpp Singleton.h
-	g++ -fPIC -c -Wall -pedantic -Werror Singleton.cpp
+	g++ -fPIC -std=c++17 -c -Wall -pedantic -Werror Singleton.cpp
 
 singleton_dynamic.o: singleton_dynamic.cpp singleton_dynamic.h
-	g++ -fPIC -c -Wall -pedantic -Werror singleton_dynamic.cpp
+	g++ -fPIC -std=c++17 -c -Wall -pedantic -Werror singleton_dynamic.cpp
 
 singleton_dynamic.so: Singleton.o singleton_dynamic.o
 	g++ -shared -o libsingleton_dynamic.so Singleton.o singleton_dynamic.o

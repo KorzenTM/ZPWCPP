@@ -5,6 +5,7 @@
 #include "Singleton.h"
 
 std::shared_ptr<Singleton> Singleton::theSingleInstance;
+std::mutex Singleton::mMutex;
 
 Singleton::Singleton()
 {
@@ -14,8 +15,9 @@ Singleton::Singleton()
 
 Singleton &Singleton::instance()
 {
+    std::lock_guard<std::mutex> lock(mMutex);
     if (Singleton::theSingleInstance == nullptr)
-        Singleton::theSingleInstance.reset(new Singleton);
+        Singleton::theSingleInstance = std::make_shared<Singleton>(Singleton());
     return *Singleton::theSingleInstance;
 }
 
